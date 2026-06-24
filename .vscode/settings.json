@@ -67,6 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Proj_3D-main.slnx",
+    "dotnet.defaultSolution": "Projet_3D.slnx",
     "dotnet.enableWorkspaceBasedDevelopment": false
 }

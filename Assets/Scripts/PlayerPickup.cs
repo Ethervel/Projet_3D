@@ -39,9 +39,14 @@ public class PlayerPickup : MonoBehaviour
 
     static readonly int PickupHash = Animator.StringToHash("Pickup");
 
+    // Objets deja ramasses au moins une fois (lu par le garde forestier).
+    static readonly HashSet<GameObject> _pickedUp = new HashSet<GameObject>();
+    public static bool WasPickedUp(GameObject go) => go != null && _pickedUp.Contains(go);
+
     // ─────────────────────────────────────────────────────────────────────────
     void Start()
     {
+        _pickedUp.Clear(); // reset propre a chaque (re)chargement de scene
         _animator = GetComponent<Animator>();
         _rb       = GetComponent<Rigidbody>();
         if (_rb != null) _originalConstraints = _rb.constraints;
@@ -91,6 +96,9 @@ public class PlayerPickup : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────
     void Update()
     {
+        // ── Menu debut ou pause : ignorer toute interaction
+        if (StartMenu.IsActive || PauseMenu.IsPaused) return;
+
         // ── En train de ramasser : attendre fin d animation
         if (_isPickingUp)
         {
@@ -159,6 +167,7 @@ public class PlayerPickup : MonoBehaviour
     {
         _isPickingUp = true;
         _heldObject  = obj;
+        _pickedUp.Add(obj); // le garde forestier cesse de saluer des le ramassage
         GameUI.Instance?.SetPrompt("");
 
         FreezePlayer(true);

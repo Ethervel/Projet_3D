@@ -34,6 +34,11 @@ public class GameUI : MonoBehaviour
         Build();
     }
 
+    void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     void Update()
     {
         if (GameManager.Instance == null || GameManager.Instance.GameComplete) return;
@@ -77,7 +82,7 @@ public class GameUI : MonoBehaviour
         _timerText = tGO.GetComponent<Text>();
 
         // -- Label "Anomalies" (centre)
-        var lGO = Txt(bar.transform, "Label", "Anomalies collectees", 22, new Color(0.7f, 1f, 0.7f, 0.8f),
+        var lGO = Txt(bar.transform, "Label", "Trouve les anomalitees", 22, new Color(0.7f, 1f, 0.7f, 0.8f),
                       TextAnchor.MiddleCenter, false);
         Anchor(lGO, 0.30f, 0f, 0.62f, 1f, 0, 0, 0, 0);
 
@@ -146,30 +151,48 @@ public class GameUI : MonoBehaviour
         innerCard.GetComponent<RectTransform>().offsetMax = new Vector2(3, 3);
 
         // Titre
-        var titleGO = Txt(innerCard.transform, "Title", "FORET NETTOYEE", 56, C_Gold, TextAnchor.MiddleCenter, true);
-        Anchor(titleGO, 0, 0.68f, 1, 1, 20, 0, -20, 0);
+        var titleGO = Txt(innerCard.transform, "Title", "FORET NETTOYEE", 54, C_Gold, TextAnchor.MiddleCenter, true);
+        Anchor(titleGO, 0, 0.78f, 1, 0.98f, 20, 0, -20, 0);
 
         // Sous-titre
-        var subGO = Txt(innerCard.transform, "Sub", "Mission accomplie !", 28,
+        var subGO = Txt(innerCard.transform, "Sub", "Mission accomplie !", 26,
                         new Color(0.7f, 1f, 0.7f, 0.9f), TextAnchor.MiddleCenter, false);
-        Anchor(subGO, 0, 0.52f, 1, 0.68f, 0, 0, 0, 0);
+        Anchor(subGO, 0, 0.66f, 1, 0.78f, 0, 0, 0, 0);
 
         // Temps
-        var vtGO = Txt(innerCard.transform, "VTime", "", 36, C_White, TextAnchor.MiddleCenter, true);
-        Anchor(vtGO, 0, 0.32f, 1, 0.52f, 20, 0, -20, 0);
+        var vtGO = Txt(innerCard.transform, "VTime", "", 34, C_White, TextAnchor.MiddleCenter, true);
+        Anchor(vtGO, 0, 0.52f, 1, 0.66f, 20, 0, -20, 0);
         _vTimeText = vtGO.GetComponent<Text>();
 
         // Score
-        var vsGO = Txt(innerCard.transform, "VScore", "3 / 3 anomalies collectees", 30,
+        var vsGO = Txt(innerCard.transform, "VScore", "3 / 3 anomalies collectees", 26,
                        C_Done, TextAnchor.MiddleCenter, true);
-        Anchor(vsGO, 0, 0.12f, 1, 0.32f, 0, 0, 0, 0);
+        Anchor(vsGO, 0, 0.40f, 1, 0.52f, 0, 0, 0, 0);
 
         // Bas de carte
         var botGO = Txt(innerCard.transform, "Bot", "La foret est sauvee — Bravo !",
-                        22, new Color(0.6f, 0.9f, 0.6f, 0.8f), TextAnchor.MiddleCenter, false);
-        Anchor(botGO, 0, 0, 1, 0.12f, 0, 8, 0, -8);
+                        20, new Color(0.6f, 0.9f, 0.6f, 0.8f), TextAnchor.MiddleCenter, false);
+        Anchor(botGO, 0, 0.30f, 1, 0.40f, 0, 0, 0, 0);
+
+        // Boutons Recommencer / Quitter
+        UiKit.EnsureEventSystem();
+        var bSize = new Vector2(260, 70);
+        var br = UiKit.Button(innerCard.transform, "Recommencer", bSize,
+                              new Color(0.20f, 0.40f, 0.65f, 1f), C_White, GameActions.Restart);
+        var bq = UiKit.Button(innerCard.transform, "Quitter", bSize,
+                              new Color(0.60f, 0.22f, 0.20f, 1f), C_White, GameActions.Quit);
+        PlaceButton(br.GetComponent<RectTransform>(), bSize, new Vector2(-150, 50));
+        PlaceButton(bq.GetComponent<RectTransform>(), bSize, new Vector2( 150, 50));
 
         _victoryPanel.SetActive(false);
+    }
+
+    // Place un bouton ancre en bas-centre de la carte de victoire.
+    void PlaceButton(RectTransform rt, Vector2 size, Vector2 anchoredPos)
+    {
+        rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0f);
+        rt.sizeDelta        = size;
+        rt.anchoredPosition = anchoredPos;
     }
 
     // ── API publique ──────────────────────────────────────────────────────────
@@ -194,7 +217,7 @@ public class GameUI : MonoBehaviour
         int sc = (int)(seconds % 60);
         _vTimeText.text = $"Temps  :  {mn:00} min  {sc:00} sec";
         _victoryPanel.SetActive(true);
-        // Cursor.lockState = CursorLockMode.None; // decommenter si besoin
+        GameActions.ShowCursor(true); // curseur libre pour cliquer Recommencer / Quitter
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

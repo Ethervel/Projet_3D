@@ -70,8 +70,9 @@ public class GardeForestierPatrol : MonoBehaviour
                         Quaternion.LookRotation(dir), Time.deltaTime * 5f);
             }
 
-            // Passer a la suivante seulement si l objet a ete ramasse (desactive)
-            if (!_anomalies[_currentIndex].gameObject.activeSelf)
+            // Passer a la suivante des que l objet a ete ramasse (sans attendre le depot)
+            if (PlayerPickup.WasPickedUp(_anomalies[_currentIndex].gameObject)
+                || !_anomalies[_currentIndex].gameObject.activeSelf)
                 StopWave();
             return;
         }
