@@ -22,7 +22,11 @@ public class GameUI : MonoBehaviour
     private GameObject _promptPanel;
     private Text    _promptText;
     private GameObject _victoryPanel;
+    private Text    _vTitleText;
+    private Text    _vSubText;
     private Text    _vTimeText;
+    private Text    _vScoreText;
+    private Text    _vBotText;
     private Font    _font;
 
     void Awake()
@@ -42,10 +46,11 @@ public class GameUI : MonoBehaviour
     void Update()
     {
         if (GameManager.Instance == null || GameManager.Instance.GameComplete) return;
-        float t  = GameManager.Instance.ElapsedTime;
+        float t  = GameManager.Instance.TimeRemaining;
         int   mn = (int)(t / 60);
         int   sc = (int)(t % 60);
-        _timerText.text = $"  {mn:00}:{sc:00}";
+        _timerText.text  = $"  {mn:00}:{sc:00}";
+        _timerText.color = t <= 30f ? new Color(1f, 0.35f, 0.30f, 1f) : C_Timer; // rouge < 30s
     }
 
     // ── Construction du Canvas ────────────────────────────────────────────────
@@ -153,11 +158,13 @@ public class GameUI : MonoBehaviour
         // Titre
         var titleGO = Txt(innerCard.transform, "Title", "FORET NETTOYEE", 54, C_Gold, TextAnchor.MiddleCenter, true);
         Anchor(titleGO, 0, 0.78f, 1, 0.98f, 20, 0, -20, 0);
+        _vTitleText = titleGO.GetComponent<Text>();
 
         // Sous-titre
         var subGO = Txt(innerCard.transform, "Sub", "Mission accomplie !", 26,
                         new Color(0.7f, 1f, 0.7f, 0.9f), TextAnchor.MiddleCenter, false);
         Anchor(subGO, 0, 0.66f, 1, 0.78f, 0, 0, 0, 0);
+        _vSubText = subGO.GetComponent<Text>();
 
         // Temps
         var vtGO = Txt(innerCard.transform, "VTime", "", 34, C_White, TextAnchor.MiddleCenter, true);
@@ -168,11 +175,13 @@ public class GameUI : MonoBehaviour
         var vsGO = Txt(innerCard.transform, "VScore", "3 / 3 anomalies collectees", 26,
                        C_Done, TextAnchor.MiddleCenter, true);
         Anchor(vsGO, 0, 0.40f, 1, 0.52f, 0, 0, 0, 0);
+        _vScoreText = vsGO.GetComponent<Text>();
 
         // Bas de carte
         var botGO = Txt(innerCard.transform, "Bot", "La foret est sauvee — Bravo !",
                         20, new Color(0.6f, 0.9f, 0.6f, 0.8f), TextAnchor.MiddleCenter, false);
         Anchor(botGO, 0, 0.30f, 1, 0.40f, 0, 0, 0, 0);
+        _vBotText = botGO.GetComponent<Text>();
 
         // Boutons Recommencer / Quitter
         UiKit.EnsureEventSystem();
@@ -210,12 +219,35 @@ public class GameUI : MonoBehaviour
             _dots[i].color = i < count ? C_Done : C_Pending;
     }
 
-    public void ShowVictory(float seconds)
+    // Affiche l ecran de fin : victoire (3/3) ou temps ecoule, avec le score.
+    public void ShowEnd(bool win, int score, float secondsElapsed)
     {
         SetPrompt("");
-        int mn = (int)(seconds / 60);
-        int sc = (int)(seconds % 60);
-        _vTimeText.text = $"Temps  :  {mn:00} min  {sc:00} sec";
+
+        if (win)
+        {
+            _vTitleText.text  = "FORET NETTOYEE";
+            _vTitleText.color = C_Gold;
+            _vSubText.text    = "Mission accomplie !";
+            _vBotText.text    = "La foret est sauvee — Bravo !";
+            _vScoreText.color = C_Done;
+        }
+        else
+        {
+            _vTitleText.text  = "TEMPS ECOULE";
+            _vTitleText.color = new Color(1f, 0.45f, 0.30f, 1f);
+            _vSubText.text    = "Le temps est ecoule !";
+            _vBotText.text    = score >= GameManager.Total
+                ? "La foret est sauvee — Bravo !"
+                : "La foret n est pas encore propre...";
+            _vScoreText.color = score > 0 ? C_Timer : C_Pending;
+        }
+
+        int mn = (int)(secondsElapsed / 60);
+        int sc = (int)(secondsElapsed % 60);
+        _vTimeText.text  = win ? $"Temps  :  {mn:00} min  {sc:00} sec" : "Temps  :  04 min  00 sec";
+        _vScoreText.text = $"{score} / {GameManager.Total} anomalies collectees";
+
         _victoryPanel.SetActive(true);
         GameActions.ShowCursor(true); // curseur libre pour cliquer Recommencer / Quitter
     }
