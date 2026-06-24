@@ -6,9 +6,16 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public int   ItemsDeposited { get; private set; }
-    public float ElapsedTime    { get; private set; }
+    public float TimeRemaining  { get; private set; }
     public bool  GameComplete   { get; private set; }
-    public const int Total = 3;
+    public bool  Win            { get; private set; }
+    public const int   Total     = 3;
+    public const float TimeLimit = 240f;   // 4 minutes
+
+    void Start()
+    {
+        TimeRemaining = TimeLimit;
+    }
 
     // S execute une seule fois au lancement : cree le controller et s assure
     // qu il est recree a CHAQUE chargement de scene (ex : Recommencer).
@@ -46,7 +53,13 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (!GameComplete) ElapsedTime += Time.deltaTime;
+        if (GameComplete) return;
+        TimeRemaining -= Time.deltaTime;
+        if (TimeRemaining <= 0f)
+        {
+            TimeRemaining = 0f;
+            EndGame(false);   // temps ecoule
+        }
     }
 
     public void RegisterDeposit()
@@ -55,9 +68,14 @@ public class GameManager : MonoBehaviour
         ItemsDeposited++;
         GameUI.Instance?.UpdateCounter(ItemsDeposited);
         if (ItemsDeposited >= Total)
-        {
-            GameComplete = true;
-            GameUI.Instance?.ShowVictory(ElapsedTime);
-        }
+            EndGame(true);    // victoire
+    }
+
+    void EndGame(bool win)
+    {
+        if (GameComplete) return;
+        GameComplete = true;
+        Win = win;
+        GameUI.Instance?.ShowEnd(win, ItemsDeposited, TimeLimit - TimeRemaining);
     }
 }
