@@ -279,7 +279,6 @@ Terrain:
   m_AllowAutoConnect: 1
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
-  m_EnableHeightmapLODFrustumCulling: 1
   m_TreeMotionVectorModeOverride: 3
 --- !u!4 &284663426
 Transform:
@@ -960,6 +959,7 @@ GameObject:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
   - component: {fileID: 705507996}
+  - component: {fileID: 705507997}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -1076,6 +1076,31 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &705507997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705507993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb02cebadf778e94182f72de1cfa5abb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayNightCycle
+  cycleDuration: 120
+  startTimeOfDay: 0.3
+  dayIntensity: 1
+  nightIntensity: 0.05
+  dayColor: {r: 1, g: 0.96, b: 0.84, a: 1}
+  horizonColor: {r: 1, g: 0.5, b: 0.22, a: 1}
+  nightColor: {r: 0.2, g: 0.3, b: 0.55, a: 1}
+  dayAmbient: {r: 0.606, g: 0.648, b: 0.726, a: 1}
+  nightAmbient: {r: 0.05, g: 0.06, b: 0.12, a: 1}
+  controlSkybox: 1
+  daySkyExposure: 1
+  nightSkyExposure: 0.1
+  timeOfDay: 0
 --- !u!1001 &797470476
 PrefabInstance:
   m_ObjectHideFlags: 0
