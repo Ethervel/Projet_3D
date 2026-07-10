@@ -1,0 +1,255 @@
+%==============================================================================
+%  README final / Rapport de projet  --  ST2MPG (Patrouille Forestiere Responsable)
+%  Prototype : "Nettoyage de la Foret"
+%  Compilation :  pdflatex RAPPORT.tex   (deux passes pour la table des matieres)
+%==============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{forest}{RGB}{28,90,170}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=forest,
+  urlcolor=forest,
+  citecolor=forest,
+  pdftitle={README - ST2MPG Patrouille Forestiere Responsable}
+}
+
+\titleformat{\section}{\Large\bfseries\color{forest}}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+\setlist{itemsep=2pt, topsep=3pt}
+
+% Champ à compléter (surligné en rouge) — remplacez le texte entre accolades.
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[\,#1\,]}}}
+
+\newcommand{\keycap}[1]{\fbox{\small\texttt{#1}}}
+
+%==============================================================================
+\begin{document}
+
+%------------------------------------------------------------------ Page titre
+\begin{titlepage}
+\centering
+\vspace*{2.2cm}
+{\large ST2MPG --- Projet de Modélisation Géométrique\par}
+{\large Fil rouge : \emph{Patrouille Forestière Responsable}\par}
+\vspace{1.6cm}
+{\Huge\bfseries\color{forest} Nettoyage de la Forêt\par}
+\vspace{0.5cm}
+{\Large Prototype interactif PC (clavier-souris) --- Unity\par}
+\vspace{2cm}
+
+{\large\bfseries Membres du groupe (trinôme)\par}
+\vspace{0.4cm}
+{\large
+Junghoon Kim (LaelKim)\\[2pt]
+\todo{Nom du membre 2}\\[2pt]
+\todo{Nom du membre 3}\par}
+
+\vfill
+{\large Groupe \todo{n° de groupe} \quad---\quad \today\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%------------------------------------------------------------------ Résumé
+\section{Résumé du prototype}
+\emph{Nettoyage de la Forêt} est le prototype réalisé dans le cadre du fil rouge
+\emph{Patrouille Forestière Responsable} (ST2MPG). Il met en scène une situation
+de \textbf{surveillance forestière} à visée environnementale : le joueur, jeune
+garde forestier, effectue une patrouille dans une réserve naturelle afin
+d'\textbf{identifier et de traiter trois anomalies environnementales} --- un
+\textbf{arbre malade}, un \textbf{animal} abandonné (chien) et un \textbf{sac de
+déchets sauvages}. Le joueur repère chaque anomalie à proximité, la ramasse
+(signalement + collecte) puis la rapporte à la \textbf{poubelle} près du poste
+forestier avant la fin du \textbf{compte à rebours de 4 minutes}.
+
+Un \textbf{garde forestier (PNJ)} patrouille entre les anomalies via le NavMesh et
+salue le joueur pour l'orienter tant qu'une anomalie n'a pas été traitée. Le monde
+est animé par un \textbf{cycle jour / nuit} dynamique, et l'expérience est encadrée
+par un menu d'accueil (consignes de mission), un menu pause et un écran de bilan
+final (mission réussie ou temps écoulé). Conformément au positionnement du module,
+la priorité a été mise sur une \textbf{scène 3D structurée, cohérente et animée}
+intégrant des assets modélisés sous Blender.
+
+%------------------------------------------------------------------ Commandes
+\section{Commandes clavier--souris}
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Commande} & \textbf{Action} \\
+\midrule
+\keycap{Z}\,\keycap{Q}\,\keycap{S}\,\keycap{D} / Flèches & Déplacer le personnage \\
+Souris & Orienter la caméra (troisième personne) \\
+\keycap{Espace} & Sauter \\
+\keycap{Maj gauche} & Courir / sprint \\
+\keycap{E} & Ramasser (signaler) une anomalie proche / la déposer dans la poubelle \\
+\keycap{Échap} & Ouvrir / fermer le menu pause \\
+Clic gauche & Valider les boutons des menus (Commencer, Reprendre, Recommencer, Quitter) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\noindent\textit{Remarque : les déplacements et la caméra reposent sur le
+contrôleur Invector (Third Person Controller LITE) ; l'interaction
+(ramasser / déposer / signaler) et l'ensemble des menus sont des développements
+propres au groupe.}
+
+%------------------------------------------------------------------ Fonctionnalités
+\section{Liste des fonctionnalités}
+\begin{itemize}
+  \item \textbf{Scène forestière jouable} : terrain naturel, végétation, poste
+        forestier (maison en bois), zone de départ et PNJ animé.
+  \item \textbf{Contrôleur troisième personne} : marche, course, saut et caméra
+        libre à la souris pour explorer la zone.
+  \item \textbf{Trois anomalies environnementales} identifiables visuellement
+        (arbre malade, animal, déchets) à retrouver et à traiter.
+  \item \textbf{Détection et signalement de proximité} : détection de l'anomalie
+        la plus proche, message contextuel \og [E] Ramasser \fg{}, puis dépôt à la
+        poubelle qui valide l'anomalie et met le score à jour.
+  \item \textbf{Système de ramassage / transport} : animation de ramassage,
+        attache de l'objet dans la main droite du personnage, transport, puis dépôt.
+  \item \textbf{Compte à rebours} de 4 minutes visible dans l'interface ;
+        l'affichage passe au rouge sous 30 secondes.
+  \item \textbf{Conditions de fin claires} : victoire (3/3 déposées) ou défaite
+        (temps écoulé), avec écran-bilan (temps utilisé, nombre d'anomalies).
+  \item \textbf{Garde forestier (PNJ animé)} : patrouille automatique entre les
+        anomalies via le NavMesh, se tourne vers le joueur et le salue tant que
+        l'anomalie visée n'a pas été traitée (feedback / réaction à l'approche).
+  \item \textbf{Cycle jour / nuit dynamique} : rotation du soleil, variation
+        d'intensité, de couleur (blanc chaud, orange à l'horizon, bleu nuit),
+        d'ambiance globale et d'exposition de la skybox.
+  \item \textbf{Halo lumineux de nuit} : point de lumière pulsé autour du garde
+        pour le repérer dans l'obscurité.
+  \item \textbf{Interface utilisateur (HUD)} : barre supérieure avec minuteur,
+        compteur \og 0 / 3 \fg{}, pastilles de progression et messages contextuels.
+  \item \textbf{Menus} : écran d'accueil (rôle et objectifs), menu pause (gel du
+        temps et du joueur) et écran de fin, avec gestion automatique du curseur.
+\end{itemize}
+
+%------------------------------------------------------------------ Assets modélisés
+\section{Liste des assets modélisés}
+Assets modélisés / texturés par le groupe sous Blender puis exportés en FBX et
+intégrés dans Unity (échelle contrôlée, matériaux lisibles, nommage clair) :
+\begin{itemize}
+  \item \textbf{Arbre malade} (\texttt{ArbreMalade.fbx}) --- élément statique
+        personnalisé servant d'anomalie.
+  \item \textbf{Poubelle} (\texttt{trashcan.fbx}) --- objet environnemental, point
+        de dépôt / validation des anomalies.
+  \item \textbf{Maison en bois / poste forestier} (\texttt{Wood/Wood\_house.fbx})
+        avec son jeu de textures PBR (base color, normal, roughness, metallic,
+        displacement).
+  \item \textbf{Garde forestier} --- texturage du personnage
+        (\texttt{Garde\_Material} : diffuse camo, normal, roughness).
+\end{itemize}
+
+\noindent\textbf{Assets importés / externes} (non modélisés, utilisés tels quels
+ou adaptés) : contrôleur \emph{Invector Third Person Controller LITE},
+\emph{Supercyan Free Forest Sample} (décor forestier et personnage jouable),
+modèle du chien \emph{Shiba} (animal-anomalie) et sac de déchets (\texttt{garbage}).
+
+\noindent\textit{Couverture du cahier des charges de modélisation (§6) : deux objets
+environnementaux (poubelle, sac de déchets), un bâtiment / poste forestier (maison
+en bois), un élément statique personnalisé (arbre malade). L'animal-anomalie utilise
+un modèle importé.}
+
+%------------------------------------------------------------------ Animations
+\section{Liste des animations utilisées}
+\begin{itemize}
+  \item \textbf{Locomotion du joueur} : idle, marche, course, saut (fournies par
+        le contrôleur Invector).
+  \item \textbf{Ramassage} (\texttt{Lifting.fbx}) : animation \og Pickup \fg{}
+        jouée lorsque le joueur ramasse / signale une anomalie.
+  \item \textbf{Marche du garde} (\texttt{Walking.fbx}) : déplacement du garde
+        forestier (PNJ) pendant la patrouille.
+  \item \textbf{Salut du garde} (\texttt{Waving.fbx}) : geste de la main déclenché
+        lorsqu'il atteint une anomalie et fait face au joueur.
+\end{itemize}
+Ces clips sont pilotés par l'\emph{Animator Controller}
+\texttt{GardeForestier\_Controller} (paramètres \texttt{Speed}, \texttt{isWaving})
+pour le PNJ, et par le déclencheur \texttt{Pickup} pour le joueur.
+
+%------------------------------------------------------------------ Répartition
+\section{Répartition du travail}
+Répartition selon les trois rôles du trinôme définis par le sujet (§9).
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}p{3.2cm}p{3.4cm}X@{}}
+\toprule
+\textbf{Membre} & \textbf{Rôle} & \textbf{Contributions principales} \\
+\midrule
+\todo{Membre} & Rôle 1 --- Modélisation \& assets &
+Modélisation Blender (arbre malade, poubelle, maison/poste forestier),
+texturage du garde, exports FBX, intégration et échelle dans Unity. \\
+\addlinespace
+\todo{Membre} & Rôle 2 --- Personnage, rigging \& animation &
+Intégration du garde forestier (PNJ), Animator Controller, clips Walking / Waving
+et animation de ramassage, transitions et cohérence avec le scénario. \\
+\addlinespace
+Junghoon Kim (LaelKim) & Rôle 3 --- Intégration Unity, interaction \& UI &
+Scène et organisation du projet, déplacement PC, détection / signalement des
+anomalies, score, timer, cycle jour/nuit, HUD et menus, build et tests. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\noindent\textit{Ajustez l'attribution des rôles et complétez les noms selon les
+contributions réelles (chaque membre doit avoir participé aux tests, aux commits
+Git et à la conception du scénario).}
+
+%------------------------------------------------------------------ Liens
+\section{Liens}
+\begin{itemize}
+  \item \textbf{Dépôt Git} : \todo{URL du dépôt}
+  \item \textbf{Vidéo de démonstration} : \todo{URL (YouTube non répertorié / Drive / OneDrive)}
+  \item \textbf{Exécutable Windows} : \todo{URL de l'archive Build\_...\_GroupeX.zip}
+\end{itemize}
+
+%------------------------------------------------------------------ Bugs connus
+\section{Bugs connus}
+\begin{itemize}
+  \item Le garde forestier dépend de la présence d'un \textbf{NavMesh} et
+        d'objets nommés exactement \texttt{ArbreMalade}, \texttt{Shiba},
+        \texttt{garbage} ; un renommage ou un NavMesh non généré interrompt sa
+        patrouille.
+  \item La détection de la poubelle et des anomalies se fait par \textbf{nom}
+        d'objet ; toute duplication ou renommage peut empêcher le ramassage ou le
+        dépôt.
+  \item L'ajustement de l'échelle de l'objet tenu en main peut varier selon le
+        modèle (pivot / unités du FBX), entraînant parfois un léger décalage à
+        l'attache.
+  \item Absence de \textbf{feedback sonore} (le feedback est uniquement visuel /
+        textuel pour l'instant).
+  \item \todo{Ajoutez ici tout autre bug constaté lors de vos tests}
+\end{itemize}
+
+%------------------------------------------------------------------ Améliorations
+\section{Pistes d'amélioration}
+\begin{itemize}
+  \item Remplacer la recherche d'objets par nom par un système de \emph{tags} ou
+        de composants dédiés, plus robuste.
+  \item Ajouter du \textbf{son} : ambiance forêt jour/nuit, effets de ramassage /
+        dépôt, message radio (animation d'utilisation de la radio par le garde,
+        prévue par le sujet).
+  \item Ajouter le \textbf{retour au poste forestier} comme condition de fin
+        alternative, en plus de la collecte complète.
+  \item Augmenter le nombre et la variété des anomalies, avec placement aléatoire
+        pour la rejouabilité.
+  \item Enrichir l'IA du garde (dialogue, pointage vers l'anomalie la plus proche).
+  \item Ajouter un mini-radar / boussole indiquant les anomalies restantes.
+  \item Options de configuration (sensibilité souris, volume, difficulté / durée).
+  \item \textbf{Évolution vers la XR} l'année suivante : adapter les interactions
+        (ramassage, menus) et les déplacements aux contrôleurs de casque.
+\end{itemize}
+
+\end{document}
